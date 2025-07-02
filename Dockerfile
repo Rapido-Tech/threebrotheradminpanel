@@ -1,11 +1,11 @@
 # Stage 1 - Build the Vite app
-FROM node:20-alpine as builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
 COPY tsconfig*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 COPY . .
 RUN npm run build
