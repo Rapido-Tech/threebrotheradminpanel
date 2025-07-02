@@ -31,3 +31,4 @@ jobs:
           tags: rapidotech/threebrotheradminpanel:latest
           build-args: |
             VITE_API_URL=${{ secrets.VITE_API_URL }}
+          
