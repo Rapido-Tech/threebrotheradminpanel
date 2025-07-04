@@ -40,6 +40,7 @@ export default function SignUpForm() {
     if (step === 2) {
       // Send data to register user and trigger email
       const toastId = toast.loading('Sending verification email...')
+
       try {
         await axios.post(
           `${API_URL}/register`,
@@ -56,6 +57,7 @@ export default function SignUpForm() {
         toast.success('Verification email sent!', { id: toastId })
         setStep(3)
       } catch (err) {
+        console.log(err)
         const msg =
           axios.isAxiosError(err) && err.response?.data?.message
             ? err.response.data.message
