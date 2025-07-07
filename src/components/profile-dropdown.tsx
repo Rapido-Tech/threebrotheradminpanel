@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { useAuthStore } from '@/stores/authStore'
 import { handleLogout } from '@/utils/services'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+//import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -20,10 +20,10 @@ export function ProfileDropdown() {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant='ghost' className='relative h-8 w-8 rounded-full'>
-          <Avatar className='h-8 w-8'>
+          {/* <Avatar className='h-8 w-8'>
             <AvatarImage src='/avatars/01.png' alt='@shadcn' />
             <AvatarFallback>SN</AvatarFallback>
-          </Avatar>
+          </Avatar> */}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56' align='end' forceMount>
