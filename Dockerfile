@@ -20,6 +20,9 @@ RUN npm run build
 # Stage 2 - Run the app with a static file server
 FROM nginx:alpine
 
+# Copy the custom nginx.conf file into the container
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # Copy built app from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
