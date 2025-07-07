@@ -69,3 +69,9 @@ export type StoreData = z.infer<typeof storeSchema>
 export type ShopData = z.infer<typeof shopSchema>
 export type UserData = z.infer<typeof userSchema>
 export type OnBoardingFormData = z.infer<typeof OnBoardingFormSchema>
+
+export interface ProductDataset {
+  _id?: string
+  name?: string
+  symbol?: string
+}

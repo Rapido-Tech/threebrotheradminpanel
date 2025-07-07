@@ -132,7 +132,6 @@ export const VariationManager = ({
     <div className='mt-6 rounded-sm border p-2'>
       <div className='flex items-center justify-between'>
         <div>
-          {' '}
           <Label className='capitalize'>{variation.variantType}</Label>
           <p className='mb-2 text-xs text-muted-foreground'>
             Add available {variation.variantType.toLowerCase()}s and quantities
@@ -160,7 +159,7 @@ export const VariationManager = ({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder='Color name'
-              className='w-28'
+              className='w-28 !text-xs'
             />
             <Input
               type='color'
@@ -174,7 +173,7 @@ export const VariationManager = ({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder={`Enter ${variation.variantType}`}
-            className='w-40'
+            className='w-40 !text-xs'
           />
         )}
         <Input
@@ -213,7 +212,7 @@ export const VariationManager = ({
             )}
             <Badge
               variant='outline'
-              className='mr-2 px-2 py-1 text-sm font-medium'
+              className='mr-2 hidden px-2 py-1 text-sm font-medium md:block'
             >
               {item.name}
             </Badge>

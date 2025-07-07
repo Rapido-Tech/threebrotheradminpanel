@@ -359,10 +359,10 @@ export default function AddNewProduct() {
   return (
     <div className='my-2'>
       {fields.map((product, index) => (
-        <form key={index} className='grid gap-6 px-2'>
-          <div className='grid gap-2 md:grid-cols-2'>
+        <form key={index} className='px-2'>
+          <div className='lg:grid lg:grid-cols-2 lg:gap-2'>
             {/* Product Form Fields */}
-            <div className='space-y-4 rounded-lg bg-muted p-6'>
+            <div className='space-y-4 rounded-lg bg-muted p-3 md:p-6'>
               <div>
                 <Controller
                   control={control}
@@ -548,16 +548,18 @@ export default function AddNewProduct() {
                   <p className='mb-2 text-xs text-muted-foreground'>
                     Set Product Variety Stock and Prices
                   </p>
-                  <div className='flex gap-2'>
+                  <div className='flex gap-2 !text-xs'>
                     <Input
                       value={newVariantType}
                       onChange={(e) => setNewVariantType(e.target.value)}
                       placeholder='Size, Color...'
+                      className='!text-xs'
                     />
                     <Input
                       value={newSubVariationName} // For subVariation name input
                       onChange={(e) => setNewSubVariationName(e.target.value)}
                       placeholder=' Small, Red...'
+                      className='!text-xs'
                     />
                     <Button
                       type='button'
@@ -841,9 +843,9 @@ export default function AddNewProduct() {
                   control={control}
                   render={({ field }) => (
                     <div className='space-y-1'>
-                      <Label>Product Section</Label>
+                      <Label>Product online</Label>
                       <p className='mb-2 text-xs text-muted-foreground'>
-                        Select sections where this product should appear
+                        Should this product be visible to customers?
                       </p>
                       <div className='flex items-center space-x-4'>
                         <Checkbox
@@ -860,20 +862,17 @@ export default function AddNewProduct() {
                 />
               </div>
             </div>
-
-            {/* Remove Product Button */}
-
-            <div className='col-span-2 mb-2 flex justify-between border-b pb-2'>
-              {draftProduct.length > 1 && (
-                <Button
-                  type='button'
-                  variant='destructive'
-                  onClick={() => handleRemoveProduct(index)}
-                >
-                  Remove Product
-                </Button>
-              )}
-            </div>
+          </div>
+          <div className='col-span-2 mb-2 flex justify-between border-b pb-2'>
+            {draftProduct.length > 1 && (
+              <Button
+                type='button'
+                variant='destructive'
+                onClick={() => handleRemoveProduct(index)}
+              >
+                Remove Product
+              </Button>
+            )}
           </div>
         </form>
       ))}

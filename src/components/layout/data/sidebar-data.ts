@@ -1,10 +1,13 @@
 import {
+  IconBoxModel2,
+  IconBrandAirtable,
   IconBrowserCheck,
   IconChecklist,
   IconHelp,
   IconLayoutDashboard,
   IconNotification,
   IconPalette,
+  IconScale,
   IconSettings,
   IconTool,
   IconUserCog,
@@ -49,6 +52,21 @@ export const sidebarData: SidebarData = {
           title: 'Products',
           url: '/products',
           icon: IconChecklist,
+        },
+        {
+          title: 'Categories',
+          url: '/category',
+          icon: IconBrandAirtable,
+        },
+        {
+          title: 'Units',
+          url: '/unit',
+          icon: IconScale,
+        },
+        {
+          title: 'Sections',
+          url: '/section',
+          icon: IconBoxModel2,
         },
         {
           title: 'Orders',
