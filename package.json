@@ -4,7 +4,8 @@
   "version": "1.2.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "tsr && vite",
+    "tsr": "tsr",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -66,6 +67,7 @@
     "@faker-js/faker": "^9.3.0",
     "@tanstack/eslint-plugin-query": "^5.62.1",
     "@tanstack/react-query-devtools": "^5.62.3",
+    "@tanstack/router-cli": "^1.125.4",
     "@tanstack/router-devtools": "^1.86.1",
     "@tanstack/router-plugin": "^1.86.0",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
