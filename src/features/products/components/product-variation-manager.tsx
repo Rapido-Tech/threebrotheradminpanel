@@ -212,7 +212,9 @@ export const VariationManager = ({
             )}
             <Badge
               variant='outline'
-              className='mr-2 hidden px-2 py-1 text-sm font-medium md:block'
+              className={`mr-2 px-2 py-1 text-sm font-medium ${
+                isColor ? 'hidden md:block' : ''
+              }`}
             >
               {item.name}
             </Badge>
