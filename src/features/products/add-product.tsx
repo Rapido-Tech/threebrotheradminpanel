@@ -40,31 +40,7 @@ export default function AddNewProduct() {
 
   const { isLoading, categories, units, sections } = useProductMetaData()
 
-  const [draftProduct, setDraftProduct] = useState<ProductDraft[]>([
-    {
-      productImages: [],
-      variations: [
-        {
-          id: '1',
-          variantType: 'Size',
-          subVariation: [
-            { name: 'lg', quantity: 0, amount: 0 },
-            { name: 'sm', quantity: 0, amount: 0 },
-            { name: 'md', quantity: 0, amount: 0 },
-          ],
-        },
-        {
-          id: '2',
-          variantType: 'Color',
-          subVariation: [
-            { name: '#ff0000', quantity: 0, amount: 0 },
-            { name: '#0000ff', quantity: 0, amount: 0 },
-            { name: '#ffff00', quantity: 0, amount: 0 },
-          ],
-        },
-      ],
-    },
-  ])
+  const [draftProduct, setDraftProduct] = useState<ProductDraft[]>([])
 
   const [newVariantType, setNewVariantType] = useState('')
   const [newSubVariationName, setNewSubVariationName] = useState('')
@@ -79,12 +55,8 @@ export default function AddNewProduct() {
     onSuccess: () => {
       toast.success('Product added successfully!')
       queryClient.invalidateQueries({ queryKey: ['products'] })
-      setDraftProduct([
-        {
-          productImages: [],
-          variations: [],
-        },
-      ])
+      setDraftProduct([])
+      reset({ products: [] })
     },
     onError: (error: any) => {
       toast.error(error.message || 'Failed to add product.')
@@ -101,65 +73,43 @@ export default function AddNewProduct() {
     },
   })
 
-  const defaultProduct = {
-    productName: '',
-    description: '',
-    buyingPrice: 0,
-    sellingPrice: 0,
-    stock: 0,
-    discount: 0,
-    unit: { _id: '', unitName: '', unitSymbol: '' },
-    category: { _id: '', categoryName: '' },
-    sections: [{ _id: '', sectionName: '' }],
-    productImages: [],
-    variations: [
-      {
-        id: '1',
-        variantType: 'Size',
-        subVariation: [
-          { name: 'lg', quantity: 0, amount: 0 },
-          { name: 'sm', quantity: 0, amount: 0 },
-          { name: 'md', quantity: 0, amount: 0 },
-        ],
-      },
-      {
-        id: '2',
-        variantType: 'Color',
-        subVariation: [
-          { name: '#ff0000', quantity: 0, amount: 0 },
-          { name: '#0000ff', quantity: 0, amount: 0 },
-          { name: '#ffff00', quantity: 0, amount: 0 },
-        ],
-      },
-    ],
-    visible: true,
-  }
-
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<ProductsFormData>({
     resolver: zodResolver(ProductsFormSchema),
     defaultValues: {
-      products: [defaultProduct],
+      products: [],
     },
   })
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'products', // This is where your products are stored
+    name: 'products',
   })
 
   const handleAddProduct = () => {
-    setDraftProduct((prev) => [
-      ...prev,
-      {
-        productImages: [],
-        variations: [],
-      },
-    ])
-    append(defaultProduct)
+    const newProduct = {
+      productImages: [],
+      variations: [],
+    }
+
+    append({
+      productName: '',
+      description: '',
+      buyingPrice: 0,
+      sellingPrice: 0,
+      stock: 0,
+      discount: 0,
+      unit: { _id: '', unitName: '', unitSymbol: '' },
+      category: { _id: '', categoryName: '' },
+      sections: [],
+      visible: true,
+      ...newProduct,
+    })
+    setDraftProduct((prev) => [...prev, newProduct])
   }
 
   const handleRemoveProduct = (index: number) => {
@@ -385,7 +335,7 @@ export default function AddNewProduct() {
                 />
               </div>
 
-              <div className='grid grid-cols-2 gap-3'>
+              <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
                 <div>
                   <Controller
                     name={`products.${index}.category` as const}
@@ -583,7 +533,7 @@ export default function AddNewProduct() {
                     </Button>
                   </div>
                 </div>
-                {draftProduct[`${index}`].variations?.map(
+                {draftProduct[`${index}`]?.variations?.map(
                   (variation, variationIndex) => (
                     <VariationManager
                       key={variation.id}
@@ -634,7 +584,7 @@ export default function AddNewProduct() {
                 <Label>Product Images</Label>
 
                 <p className='mb-2 text-xs text-muted-foreground'>
-                  {draftProduct[`${index}`].productImages.length
+                  {draftProduct[`${index}`]?.productImages.length
                     ? 'Click an image to set as main. First is main by default.'
                     : 'No images uploaded yet.'}
                 </p>
@@ -690,7 +640,7 @@ export default function AddNewProduct() {
               </Dropzone>
 
               <div className='mt-4 flex flex-wrap gap-2'>
-                {draftProduct[`${index}`].productImages.map((img) => (
+                {draftProduct[`${index}`]?.productImages.map((img) => (
                   <div
                     key={img.id}
                     className={`relative cursor-pointer overflow-hidden rounded-md border ${

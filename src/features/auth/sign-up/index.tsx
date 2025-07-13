@@ -23,7 +23,7 @@ export default function SignUp() {
         </div>
       </div>
 
-      <div className='col-span-2 flex h-full items-center justify-center bg-primary-foreground'>
+      <div className='col-span-2 flex h-full items-center justify-center bg-primary-foreground p-5'>
         <div className='mx-auto flex w-full flex-col justify-center space-y-2 sm:w-[450px]'>
           <div className='flex flex-col'>
             <h1 className='border-b pb-2 text-2xl font-semibold tracking-tight'>
