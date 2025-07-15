@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { _ } from 'node_modules/@faker-js/faker/dist/airline-BUL6NtOJ'
 
 const VariantSchema = z.object({
   id: z.string(),
@@ -30,7 +31,9 @@ export const ProductSchema = z
       unitSymbol: z.string(),
     }),
     discount: z.coerce.number().optional(),
-    sections: z.array(z.object({ _id: z.string(), sectionName: z.string() })),
+    sections: z
+      .array(z.object({ _id: z.string(), sectionName: z.string() }))
+      .optional(),
     visible: z.boolean().default(true),
     variations: z.array(VariantSchema).optional(),
     productImages: z.array(
@@ -41,6 +44,7 @@ export const ProductSchema = z
         isMain: z.boolean().optional(),
       })
     ),
+    isPublished: z.boolean().default(true).optional(),
   })
   .refine((data) => data.sellingPrice > data.buyingPrice, {
     path: ['sellingPrice'],
@@ -52,6 +56,7 @@ export const ProductsFormSchema = z.object({
 })
 
 export const FetchedProductSchema = z.object({
+  _id: z.string(),
   productName: z.string(),
   brand: z.string(),
   stock: z.number(),
@@ -69,6 +74,8 @@ export const FetchedProductSchema = z.object({
     _id: z.string(),
     categoryName: z.string(),
   }),
+  variations: z.array(VariantSchema).optional(),
+
   createdAt: z.coerce.date(),
   productImages: z.array(
     z.object({

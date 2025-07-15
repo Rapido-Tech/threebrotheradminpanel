@@ -173,14 +173,16 @@ export default function AddNewProduct() {
         `products[${index}].visible`,
         mergedProduct.visible.toString()
       )
-      formData.append(
-        `products[${index}].sections`,
-        JSON.stringify(
-          mergedProduct.sections
-            .map((s) => s._id)
-            .filter((id) => id && id.trim() !== '')
+      if (mergedProduct.sections !== undefined) {
+        formData.append(
+          `products[${index}].sections`,
+          JSON.stringify(
+            mergedProduct.sections
+              .map((s) => s._id)
+              .filter((id) => id && id.trim() !== '')
+          )
         )
-      )
+      }
 
       // Add images for each product
       mergedProduct.productImages.forEach((img, i) => {
