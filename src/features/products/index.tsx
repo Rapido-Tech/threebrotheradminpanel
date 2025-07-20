@@ -178,6 +178,8 @@ export default function Products() {
         formData.append('imageUpdates', JSON.stringify(imageUpdates))
       }
 
+      console.log('productId:', productId)
+
       const response = await axios.put(
         `${API_URL}/product/${productId}`,
         formData,
@@ -193,13 +195,29 @@ export default function Products() {
     },
   })
 
+  const deleteProduct = useMutation({
+    mutationFn: async ({ productId }: { productId: string }) => {
+      const response = await axios.delete(`${API_URL}/product/${productId}`, {
+        withCredentials: true,
+      })
+
+      return response.data
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ['products'] })
+    },
+  })
+
+  const [operation, setOperation] = useState<'edit' | 'add'>('edit')
   const [editingProduct, setEditingProduct] = useState<SavedProduct | null>(
     null
   )
-  const [isDialogOpen, setDialogOpen] = useState(false)
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   async function handleEditProduct(values: any) {
     const toastId = toast.loading('Editing product...')
+    console.log('Editing product:', values)
     try {
       await updateProduct.mutateAsync({
         productId: values._id,
@@ -208,7 +226,7 @@ export default function Products() {
       })
       toast.success('Product edited successfully', { id: toastId })
       setEditingProduct(null)
-      setDialogOpen(false)
+      setIsDialogOpen(false)
     } catch (error) {
       console.error('Failed to edit product:', error)
       toast.error(
@@ -220,14 +238,34 @@ export default function Products() {
     }
   }
 
-  const handleEdit = async (productId: string) => {
+  const handleEdit = async (productId: string, operation: 'edit' | 'add') => {
+    setOperation(operation)
     try {
       const product = await fetchProductById(productId)
       setEditingProduct(product)
-      setDialogOpen(true)
+      setIsDialogOpen(true)
     } catch (error) {
       console.error('Error fetching product data for editing:', error)
       toast.error('Failed to fetch product data for editing.')
+    }
+  }
+
+  async function handleDelete(productId: string) {
+    console.log('Deleting product with ID:', productId)
+    const toastId = toast.loading('Deleting product...')
+    try {
+      await deleteProduct.mutateAsync({
+        productId: productId,
+      })
+      toast.success('Product deleted successfully', { id: toastId })
+    } catch (error) {
+      console.error('Failed to delete product:', error)
+      toast.error(
+        `Product deletion failed: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
+        { id: toastId }
+      )
     }
   }
 
@@ -270,7 +308,10 @@ export default function Products() {
           </div>
         </div>
         <div className='-mx-4 flex-1 overflow-hidden px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-          <DataTable data={products} columns={columns(handleEdit)} />
+          <DataTable
+            data={products}
+            columns={columns(handleEdit, handleDelete)}
+          />
           {isLoading && (
             <div className='flex size-full items-center justify-center text-xs'>
               Loading products...
@@ -280,9 +321,9 @@ export default function Products() {
         {editingProduct && (
           <ProductModal
             open={isDialogOpen}
-            onOpenChange={setDialogOpen}
+            onOpenChange={setIsDialogOpen}
             product={editingProduct}
-            mode='edit'
+            mode={operation}
             onSubmit={handleEditProduct}
           />
         )}

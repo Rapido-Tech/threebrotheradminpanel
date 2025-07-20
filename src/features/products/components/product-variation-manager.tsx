@@ -222,7 +222,6 @@ export const VariationManager = ({
               <Label className='text-xs text-gray-500'>Qty:</Label>
               <Input
                 type='number'
-                min='0'
                 value={item.quantity}
                 onChange={(e) =>
                   onQuantityChange(
@@ -238,7 +237,6 @@ export const VariationManager = ({
               <Label className='text-xs text-gray-500'>Amount:</Label>
               <Input
                 type='number'
-                min='0'
                 value={item.amount}
                 onChange={(e) =>
                   onQuantityChange(item.name, 'amount', Number(e.target.value))

@@ -72,7 +72,7 @@ export function ProductModal({
   } = form
 
   useEffect(() => {
-    if (mode === 'edit' && product) {
+    if (product) {
       const prefills = {
         productName: product.productName,
         description: product.description,
@@ -142,7 +142,9 @@ export function ProductModal({
   const submit = (vals: Product) => {
     const payload = {
       ...vals,
-      _id: mode === 'edit' ? product?._id : undefined,
+      _id: product?._id,
+      stock:
+        mode === 'add' ? product && product?.stock + vals.stock : vals.stock,
       productImages: images.map((img) => ({
         ...(img.file
           ? { file: img.file }
@@ -151,16 +153,6 @@ export function ProductModal({
       })),
     }
     onSubmit(payload)
-  }
-
-  const numericInputProps = {
-    min: 0,
-    onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === '-' || e.key === '+') {
-        e.preventDefault()
-      }
-    },
-    className: 'no-spinner',
   }
 
   return (
@@ -174,11 +166,13 @@ export function ProductModal({
       <DialogContent className='max-w-4xl sm:max-w-[900px]'>
         <DialogHeader>
           <DialogTitle>
-            {mode === 'add' ? 'Add Product' : 'Edit Product'}
+            {product && mode === 'add'
+              ? `Restock  ${product.productName}`
+              : 'Edit Product'}
           </DialogTitle>
           <DialogDescription>
             Please enter the details to{' '}
-            {mode === 'add' ? 'add a new' : 'update the'} product.
+            {mode === 'add' ? 'restock' : 'update the'} product.
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className='max-h-[calc(100vh-120px)]'>
@@ -189,6 +183,7 @@ export function ProductModal({
             >
               <div className='grid grid-cols-2 gap-4 md:grid-cols-3'>
                 {/* Product Name */}
+
                 <div className='space-y-2'>
                   <Label htmlFor='productName'>Product Name *</Label>
                   <Controller
@@ -196,6 +191,7 @@ export function ProductModal({
                     control={control}
                     render={({ field }) => (
                       <Input
+                        disabled={mode === 'add'}
                         id='productName'
                         placeholder='Product Name'
                         {...field}
@@ -221,7 +217,6 @@ export function ProductModal({
                         type='number'
                         placeholder='0'
                         {...field}
-                        {...numericInputProps}
                       />
                     )}
                   />
@@ -244,7 +239,6 @@ export function ProductModal({
                         type='number'
                         placeholder='0'
                         {...field}
-                        {...numericInputProps}
                       />
                     )}
                   />
@@ -255,61 +249,66 @@ export function ProductModal({
                   )}
                 </div>
 
-                {/* Category */}
-                <div>
-                  <Controller
-                    name='category'
-                    control={control}
-                    render={({ field }) => (
-                      <SelectField
-                        label='Category'
-                        id='category'
-                        placeholder='Select Product Category'
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={categories}
-                        addModalOpen={openAddCategoryModal}
-                        setAddModalOpen={setOpenAddCategoryModal}
-                        itemType='category'
+                {mode === 'edit' && (
+                  <>
+                    {/* Category */}
+                    <div>
+                      <Controller
+                        name='category'
+                        control={control}
+                        render={({ field }) => (
+                          <SelectField
+                            label='Category'
+                            id='category'
+                            placeholder='Select Product Category'
+                            value={field.value}
+                            onChange={field.onChange}
+                            options={categories}
+                            addModalOpen={openAddCategoryModal}
+                            setAddModalOpen={setOpenAddCategoryModal}
+                            itemType='category'
+                          />
+                        )}
                       />
-                    )}
-                  />
-                  {errors.category && (
-                    <p className='text-sm text-red-500'>
-                      {errors.category.message}
-                    </p>
-                  )}
-                </div>
+                      {errors.category && (
+                        <p className='text-sm text-red-500'>
+                          {errors.category.message}
+                        </p>
+                      )}
+                    </div>
 
-                {/* Unit */}
-                <div>
-                  <Controller
-                    name='unit'
-                    control={control}
-                    render={({ field }) => (
-                      <SelectField
-                        label='Unit'
-                        id='unit'
-                        placeholder='Select Product Unit'
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={units}
-                        addModalOpen={openAddUnitModal}
-                        setAddModalOpen={setOpenAddUnitModal}
-                        itemType='unit'
+                    {/* Unit */}
+                    <div>
+                      <Controller
+                        name='unit'
+                        control={control}
+                        render={({ field }) => (
+                          <SelectField
+                            label='Unit'
+                            id='unit'
+                            placeholder='Select Product Unit'
+                            value={field.value}
+                            onChange={field.onChange}
+                            options={units}
+                            addModalOpen={openAddUnitModal}
+                            setAddModalOpen={setOpenAddUnitModal}
+                            itemType='unit'
+                          />
+                        )}
                       />
-                    )}
-                  />
-                  {errors.unit && (
-                    <p className='text-sm text-red-500'>
-                      {errors.unit.message}
-                    </p>
-                  )}
-                </div>
+                      {errors.unit && (
+                        <p className='text-sm text-red-500'>
+                          {errors.unit.message}
+                        </p>
+                      )}
+                    </div>
+                  </>
+                )}
 
                 {/* Stock */}
                 <div className='space-y-2'>
                   <Label htmlFor='stock'>Stock *</Label>
+
                   <Controller
                     name='stock'
                     control={control}
@@ -319,7 +318,6 @@ export function ProductModal({
                         type='number'
                         placeholder='0'
                         {...field}
-                        {...numericInputProps}
                       />
                     )}
                   />
@@ -327,6 +325,14 @@ export function ProductModal({
                     <p className='text-sm text-red-500'>
                       {errors.stock.message}
                     </p>
+                  )}
+                  {mode === 'add' && product && (
+                    <div className='text-xs'>
+                      <div>
+                        Current stock : {product?.stock}
+                        {product.unit.unitSymbol}
+                      </div>
+                    </div>
                   )}
                 </div>
 
@@ -342,7 +348,6 @@ export function ProductModal({
                         type='number'
                         placeholder='0'
                         {...field}
-                        {...numericInputProps}
                       />
                     )}
                   />
@@ -353,54 +358,56 @@ export function ProductModal({
                   )}
                 </div>
               </div>
-              <div className='rounded bg-muted p-4'>
-                <Label>Product Images</Label>
-                <Dropzone accept={{ 'image/*': [] }} multiple onDrop={onDrop}>
-                  {({ getRootProps, getInputProps }) => (
-                    <div {...getRootProps()} className='cursor-pointer'>
-                      <label className='flex size-16 flex-col items-center justify-center rounded-md border bg-gray-100 hover:bg-gray-200'>
-                        <Upload className='mb-1 size-6 text-gray-400' />
-                        <span className='text-xs text-muted-foreground'>
-                          Add
-                        </span>
-                      </label>
-                      <input {...getInputProps()} />
-                    </div>
-                  )}
-                </Dropzone>
-                <div className='mt-2 flex flex-wrap gap-2'>
-                  {images.map((img) => (
-                    <div
-                      key={img.id}
-                      className={`relative cursor-pointer overflow-hidden rounded-md border ${
-                        img.isMain ? 'ring-2 ring-green-500' : ''
-                      }`}
-                    >
-                      <img
-                        src={img.preview}
-                        className='h-24 w-24 object-cover'
-                        onClick={() => handleSetMain(img.id)}
-                      />
-                      {img.isMain && (
-                        <div className='absolute left-0 top-0 bg-green-500 px-1 text-xs text-white'>
-                          Main
-                        </div>
-                      )}
-                      <Button
-                        type='button'
-                        size='icon'
-                        variant='destructive'
-                        className='absolute right-0 top-0 h-5 w-5'
-                        onClick={() => {
-                          handleRemove(img.id)
-                        }}
+              {mode === 'edit' && (
+                <div className='rounded bg-muted p-4'>
+                  <Label>Product Images</Label>
+                  <Dropzone accept={{ 'image/*': [] }} multiple onDrop={onDrop}>
+                    {({ getRootProps, getInputProps }) => (
+                      <div {...getRootProps()} className='cursor-pointer'>
+                        <label className='flex size-16 flex-col items-center justify-center rounded-md border bg-gray-100 hover:bg-gray-200'>
+                          <Upload className='mb-1 size-6 text-gray-400' />
+                          <span className='text-xs text-muted-foreground'>
+                            Add
+                          </span>
+                        </label>
+                        <input {...getInputProps()} />
+                      </div>
+                    )}
+                  </Dropzone>
+                  <div className='mt-2 flex flex-wrap gap-2'>
+                    {images.map((img) => (
+                      <div
+                        key={img.id}
+                        className={`relative cursor-pointer overflow-hidden rounded-md border ${
+                          img.isMain ? 'ring-2 ring-green-500' : ''
+                        }`}
                       >
-                        <X className='h-4 w-4' />
-                      </Button>
-                    </div>
-                  ))}
+                        <img
+                          src={img.preview}
+                          className='h-24 w-24 object-cover'
+                          onClick={() => handleSetMain(img.id)}
+                        />
+                        {img.isMain && (
+                          <div className='absolute left-0 top-0 bg-green-500 px-1 text-xs text-white'>
+                            Main
+                          </div>
+                        )}
+                        <Button
+                          type='button'
+                          size='icon'
+                          variant='destructive'
+                          className='absolute right-0 top-0 h-5 w-5'
+                          onClick={() => {
+                            handleRemove(img.id)
+                          }}
+                        >
+                          <X className='h-4 w-4' />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className='flex justify-end gap-4 pt-4'>
                 <Button
@@ -414,7 +421,7 @@ export function ProductModal({
                   Cancel
                 </Button>
                 <Button type='submit'>
-                  {mode === 'add' ? 'Add Product' : 'Update Product'}
+                  {mode === 'add' ? 'Restock Product' : 'Update Product'}
                 </Button>
               </div>
             </form>

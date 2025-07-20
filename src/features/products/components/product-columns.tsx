@@ -13,7 +13,8 @@ import { SavedProduct } from '../data/schema'
 import { DataTableColumnHeader } from './data-table-column-header'
 
 export const columns = (
-  handleEdit: (productId: string) => void
+  handleEdit: (productId: string, operation: 'edit' | 'add') => void,
+  handleDelete: (productId: string) => void
 ): ColumnDef<SavedProduct>[] => {
   return [
     {
@@ -124,15 +125,22 @@ export const columns = (
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
-            <DropdownMenuItem onClick={() => handleEdit(row.original._id)}>
+            <DropdownMenuItem
+              onClick={() => handleEdit(row.original._id, 'edit')}
+            >
               <Edit className='mr-2 h-4 w-4' />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleEdit(row.original._id, 'add')}
+            >
               <PackagePlus className='mr-2 h-4 w-4' />
               Restock
             </DropdownMenuItem>
-            <DropdownMenuItem className='text-destructive'>
+            <DropdownMenuItem
+              onClick={() => handleDelete(row.original._id)}
+              className='text-destructive'
+            >
               <Trash2 className='mr-2 h-4 w-4' />
               Delete
             </DropdownMenuItem>
